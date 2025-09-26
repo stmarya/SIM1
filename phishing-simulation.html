@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simulasi Phishing — Jangan Panik</title>
+    <style>
+      /* Basic reset */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        background: #000;
+        color: #d0d6db;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow: hidden;
+      }
+
+      /* Container */
+      .card {
+        width: min(1100px, 96%);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 36px;
+        border-radius: 8px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Scanlines */
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+          transparent 90%,
+          rgba(255, 255, 255, 0.015) 100%
+        );
+        background-size: 100% 4px;
+        pointer-events: none;
+        animation: scan 12s linear infinite;
+        mix-blend-mode: overlay;
+      }
+      @keyframes scan {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(8px);
+        }
+      }
+
+      /* Byte rain */
+      .byte-rain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .drop {
+        position: absolute;
+        top: -10%;
+        width: 2px;
+        height: 120%;
+        opacity: 0.06;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          #00e5ff 40%,
+          transparent 60%
+        );
+        filter: blur(0.6px);
+        animation: fall linear infinite;
+      }
+      @keyframes fall {
+        to {
+          transform: translateY(120%);
+        }
+      }
+
+      /* Layout */
+      .row {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+      }
+      .left {
+        flex: 0 0 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .right {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* Pixel watchdog placeholder (SVG-like via CSS) */
+      .pixel-icon {
+        width: 330px;
+        height: 120px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        background: #fff;
+        display: block;
+        border-radius: 8px;
+        border: 1px solid rgba(200, 200, 200, 0.2);
+        box-shadow: inset 0 -6px 30px rgba(0, 0, 0, 0.6);
+      }
+      /* simple pixel-art using background with CSS grid (for demo) */
+      .pixel-grid {
+        width: 96px;
+        height: 96px;
+        display: grid;
+        grid-template-columns: repeat(8, 12px);
+        grid-auto-rows: 12px;
+        gap: 1px;
+        transform: scale(1);
+      }
+      .px {
+        width: 100%;
+        height: 100%;
+      }
+      /* Watchdog colors */
+      .c1 {
+        background: #0ff;
+      }
+      .c2 {
+        background: #0a8;
+      }
+      .c3 {
+        background: #fff;
+      }
+      .c4 {
+        background: #ff3b3b;
+      }
+      .c5 {
+        background: #000;
+      }
+
+      /* Headline */
+      .headline {
+        font-weight: 800;
+        font-size: clamp(22px, 4vw, 40px);
+        letter-spacing: 1px;
+        color: #fff;
+        line-height: 1.02;
+        text-transform: uppercase;
+        position: relative;
+        display: inline-block;
+      }
+      /* Glitch layers */
+      .headline .slice {
+        position: relative;
+        display: block;
+      }
+      .headline .slice:first-child {
+        animation: glitch1 800ms infinite linear;
+      }
+      .headline .slice:nth-child(2) {
+        color: #00e5ff;
+        mix-blend-mode: screen;
+        animation: glitch2 1100ms infinite linear;
+        opacity: 0.85;
+        transform-origin: left;
+      }
+      .headline .slice:nth-child(3) {
+        color: #ff3b3b;
+        mix-blend-mode: screen;
+        animation: glitch3 950ms infinite linear;
+        opacity: 0.8;
+        transform-origin: right;
+      }
+      @keyframes glitch1 {
+        0% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-4px);
+        }
+        40% {
+          transform: translateX(2px);
+        }
+        60% {
+          transform: translateX(-2px);
+        }
+        80% {
+          transform: translateX(1px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+      @keyframes glitch2 {
+        0% {
+          clip-path: inset(0 0 0 0);
+        }
+        50% {
+          clip-path: inset(6% 0 60% 0);
+        }
+        100% {
+          clip-path: inset(0 0 0 0);
+        }
+      }
+      @keyframes glitch3 {
+        0% {
+          transform: translateX(0);
+        }
+        30% {
+          transform: translateX(3px);
+        }
+        60% {
+          transform: translateX(-3px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* Subtext & buttons */
+      .sub {
+        margin-top: 12px;
+        color: #a8b0b5;
+        font-size: 15px;
+        max-width: 780px;
+        line-height: 1.45;
+      }
+      .actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+      }
+      .btn {
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .btn-primary {
+        background: linear-gradient(90deg, #ff3b3b, #ff6b4b);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(255, 59, 59, 0.12);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: #cfe6f0;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      /* footer note */
+      .note {
+        margin-top: 18px;
+        color: #8b9398;
+        font-size: 13px;
+      }
+
+      /* Focus & accessibility */
+      .btn:focus {
+        outline: 3px solid rgba(0, 229, 255, 0.14);
+        outline-offset: 2px;
+      }
+
+      /* Responsive */
+      @media (max-width: 720px) {
+        .row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        .left {
+          align-self: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="card"
+      role="dialog"
+      aria-labelledby="title"
+      aria-describedby="desc"
+    >
+      <div class="byte-rain" aria-hidden="true"></div>
+
+      <div class="row">
+        <div class="left" aria-hidden="true">
+          <img src="logotype.png" alt="Logo" class="pixel-icon" />
+        </div>
+
+        <div class="right">
+          <h1 id="title" class="headline" aria-hidden="false">
+            <span class="slice">DONT PANIC —</span>
+            <span class="slice">You're the target of a</span>
+            <span class="slice">simulated phishing attack</span>
+          </h1>
+
+          <p id="desc" class="sub">
+            Ini adalah latihan internal untuk meningkatkan kesadaran keamanan.
+            Informasi Anda <strong>tidak disalahgunakan</strong>. Silakan segera
+            hubungi Admin atau Tim IT untuk verifikasi dan langkah mitigasi.
+          </p>
+
+          <div class="actions" role="group" aria-label="actions">
+            <a
+              class="btn btn-primary"
+              href="mailto:it-support@example.com?subject=Simulasi%20Phishing%20-%20Permintaan%20Bantuan"
+              id="contactBtn"
+              >Hubungi Admin / Tim IT</a
+            >
+            <a class="btn btn-ghost" href="#" id="learnBtn"
+              >Pelajari Lebih Lanjut</a
+            >
+          </div>
+
+          <p class="note">
+            Jika ini bukan bagian dari simulasi yang Anda ikuti, segera laporkan
+            ke IT dan jangan lanjutkan interaksi dengan pesan yang mencurigakan.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Create simple byte-rain drops for visual effect (non-invasive)
+      (function makeRain() {
+        const container = document.querySelector(".byte-rain");
+        const count = Math.floor(window.innerWidth / 14);
+        for (let i = 0; i < count; i++) {
+          const d = document.createElement("div");
+          d.className = "drop";
+          d.style.left = Math.random() * 100 + "%";
+          d.style.width = 1 + Math.random() * 2 + "px";
+          d.style.animationDuration = 6 + Math.random() * 8 + "s";
+          d.style.opacity = 0.02 + Math.random() * 0.06;
+          d.style.top = -10 - Math.random() * 20 + "%";
+          container.appendChild(d);
+        }
+      })();
+
+      // Learn more link placeholder
+      document
+        .getElementById("learnBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          alert(
+            "Halaman pembelajaran phishing (contoh). Silakan arahkan ke materi internal atau knowledge base tim IT."
+          );
+        });
+
+      // Accessibility: focus contact button on load
+      window.addEventListener("load", () => {
+        const btn = document.getElementById("contactBtn");
+        if (btn) btn.focus();
+      });
+    </script>
+  </body>
+</html>
